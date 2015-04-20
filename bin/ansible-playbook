@@ -143,11 +143,13 @@ def main(args):
 
     extra_vars = utils.parse_extra_vars(options.extra_vars, vault_pass)
 
-    if not options.tags:
-        options.tags.append("all")
+    only_tags = None
+    if options.tags:
+        only_tags = ",".join(options.tags).split(",")
 
-    only_tags = ",".join(options.tags).split(",")
-    skip_tags = ",".join(options.skip_tags).split(",")
+    skip_tags = None
+    if options.skip_tags:
+        skip_tags = ",".join(options.skip_tags).split(",")
 
     for playbook in args:
         if not os.path.exists(playbook):
