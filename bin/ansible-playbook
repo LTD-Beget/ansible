@@ -83,9 +83,9 @@ def main(args):
     )
     #parser.add_option('--vault-password', dest="vault_password",
     #    help="password for vault encrypted files")
-    parser.add_option('-t', '--tags', dest='tags', default='all',
+    parser.add_option('-t', '--tags', dest='tags', default=[], action='append',
         help="only run plays and tasks tagged with these values")
-    parser.add_option('--skip-tags', dest='skip_tags',
+    parser.add_option('--skip-tags', dest='skip_tags', default=[], action='append',
         help="only run plays and tasks whose tags do not match these values")
     parser.add_option('--syntax-check', dest='syntax', action='store_true',
         help="perform a syntax check on the playbook, but do not execute it")
@@ -143,10 +143,11 @@ def main(args):
 
     extra_vars = utils.parse_extra_vars(options.extra_vars, vault_pass)
 
-    only_tags = options.tags.split(",")
-    skip_tags = options.skip_tags
-    if options.skip_tags is not None:
-        skip_tags = options.skip_tags.split(",")
+    if not options.tags:
+        options.tags.append("all")
+
+    only_tags = ",".join(options.tags).split(",")
+    skip_tags = ",".join(options.skip_tags).split(",")
 
     for playbook in args:
         if not os.path.exists(playbook):
